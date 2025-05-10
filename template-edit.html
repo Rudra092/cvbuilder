@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Resume Builder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 30px;
+      display: flex;
+      gap: 40px;
+      background: #f5f7fa;
+    }
+    .form-section, .preview-section {
+      width: 50%;
+    }
+    .form-section {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+    .form-section h2 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    input, textarea {
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .btn {
+      margin-top: 20px;
+      padding: 12px 20px;
+      background: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .btn:hover {
+      background: #0056c7;
+    }
+    .preview {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    }
+    .preview h1 {
+      font-size: 24px;
+      margin: 0;
+    }
+    .preview p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+    .preview h2 {
+      margin-top: 20px;
+      font-size: 18px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 4px;
+    }
+    #r-photo {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      display: none;
+    }
+	.toolbar {
+  margin: 5px 0;
+}
+
+.toolbar button, .toolbar select {
+  margin-right: 5px;
+  padding: 4px 8px;
+  border: 1px solid #ccc;
+  background: #f1f1f1;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.editable {
+  min-height: 80px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  text-align: left;
+  background: white;
+}
+  </style>
+</head>
+<body>
+
+  <div class="form-section">
+    <h2>Enter Resume Info</h2>
+    <input type="text" id="name" placeholder="Full Name" oninput="updateResume()" />
+    <input type="text" id="email" placeholder="Email" oninput="updateResume()" />
+    <input type="text" id="phone" placeholder="Phone Number" oninput="updateResume()" />
+    <input type="file" id="photo" accept="image/*" onchange="updatePhoto()" />
+
+	<div>
+  <label>Career Objective</label>
+  <div class="toolbar">
+    <button onclick="formatText('bold')"><b>B</b></button>
+    <button onclick="formatText('italic')"><i>I</i></button>
+    <button onclick="formatText('underline')"><u>U</u></button>
+    <select onchange="setFontSize(this.value)">
+      <option value="3">Font Size</option>
+      <option value="1">Small</option>
+      <option value="3">Normal</option>
+      <option value="5">Large</option>
+    </select>
+  </div>
+  <div id="objective" class="editable" contenteditable="true" oninput="updateResume()">Your career objective...</div>
+</div>
+	
+	<div>
+  <label>Experience Summary</label>
+  <div class="toolbar">
+    <button onclick="formatText('bold')"><b>B</b></button>
+    <button onclick="formatText('italic')"><i>I</i></button>
+    <button onclick="formatText('underline')"><u>U</u></button>
+    <select onchange="setFontSize(this.value)">
+      <option value="3">Font Size</option>
+      <option value="1">Small</option>
+      <option value="3">Normal</option>
+      <option value="5">Large</option>
+    </select>
+  </div>
+  <div id="summary" class="editable" contenteditable="true" oninput="updateResume()">Your summary of experience...</div>
+</div>
+
+<div>
+  <label>Work Experience</label>
+  <div class="toolbar">
+    <button onclick="formatText('bold')"><b>B</b></button>
+    <button onclick="formatText('italic')"><i>I</i></button>
+    <button onclick="formatText('underline')"><u>U</u></button>
+    <select onchange="setFontSize(this.value)">
+      <option value="3">Font Size</option>
+      <option value="1">Small</option>
+      <option value="3">Normal</option>
+      <option value="5">Large</option>
+    </select>
+  </div>
+  <div id="experience" class="editable" contenteditable="true" oninput="updateResume()">Your work experience...</div>
+</div>
+
+<div>
+  <label>Technical Skills</label>
+  <div class="toolbar">
+    <button onclick="formatText('bold')"><b>B</b></button>
+    <button onclick="formatText('italic')"><i>I</i></button>
+    <button onclick="formatText('underline')"><u>U</u></button>
+    <select onchange="setFontSize(this.value)">
+      <option value="3">Font Size</option>
+      <option value="1">Small</option>
+      <option value="3">Normal</option>
+      <option value="5">Large</option>
+    </select>
+  </div>
+  <div id="skills" class="editable" contenteditable="true" oninput="updateResume()">Your technical skills...</div>
+</div>
+
+<div>
+  <label>Education</label>
+  <div class="toolbar">
+    <button onclick="formatText('bold')"><b>B</b></button>
+    <button onclick="formatText('italic')"><i>I</i></button>
+    <button onclick="formatText('underline')"><u>U</u></button>
+    <select onchange="setFontSize(this.value)">
+      <option value="3">Font Size</option>
+      <option value="1">Small</option>
+      <option value="3">Normal</option>
+      <option value="5">Large</option>
+    </select>
+  </div>
+  <div id="education" class="editable" contenteditable="true" oninput="updateResume()">Your education details...</div>
+</div>
+
+<div>
+  <label>Project Profile</label>
+  <div class="toolbar">
+    <button onclick="formatText('bold')"><b>B</b></button>
+    <button onclick="formatText('italic')"><i>I</i></button>
+    <button onclick="formatText('underline')"><u>U</u></button>
+    <select onchange="setFontSize(this.value)">
+      <option value="3">Font Size</option>
+      <option value="1">Small</option>
+      <option value="3">Normal</option>
+      <option value="5">Large</option>
+    </select>
+  </div>
+  <div id="projects" class="editable" contenteditable="true" oninput="updateResume()">Your project profile...</div>
+</div>
+
+<div>
+  <label>Personal Details</label>
+  <div class="toolbar">
+    <button onclick="formatText('bold')"><b>B</b></button>
+    <button onclick="formatText('italic')"><i>I</i></button>
+    <button onclick="formatText('underline')"><u>U</u></button>
+    <select onchange="setFontSize(this.value)">
+      <option value="3">Font Size</option>
+      <option value="1">Small</option>
+      <option value="3">Normal</option>
+      <option value="5">Large</option>
+    </select>
+  </div>
+  <div id="personal" class="editable" contenteditable="true" oninput="updateResume()">Your personal details...</div>
+</div>
+
+<button class="btn" onclick="payAndDownload()">Pay & Download Resume</button>
+
+  </div>
+
+  <div class="preview-section">
+    <div id="resume" class="preview">
+      <table style="width: 100%; margin-bottom: 20px;">
+        <tr>
+          <td style="vertical-align: top;">
+            <h1 id="r-name">Your Name</h1>
+            <p id="r-email">your@email.com</p>
+            <p id="r-phone">+1234567890</p>
+          </td>
+          <td style="text-align: right;">
+            <img id="r-photo" src="" alt="Profile Photo" />
+          </td>
+        </tr>
+      </table>
+      <h2>Career Objective</h2>
+      <p id="r-objective">Your career objective...</p>
+      <h2>Experience Summary</h2>
+      <p id="r-summary">Your summary of experience...</p>
+      <h2>Work Experience</h2>
+      <p id="r-experience">Your work experience...</p>
+      <h2>Technical Skills</h2>
+      <p id="r-skills">Your technical skills...</p>
+      <h2>Education</h2>
+      <p id="r-education">Your education details...</p>
+      <h2>Project Profile</h2>
+      <p id="r-projects">Your project profile...</p>
+      <h2>Personal Details</h2>
+      <p id="r-personal">Your personal details...</p>
+    </div>
+  </div>
+
+<script>
+function updateResume() {
+  const getHTML = id => document.getElementById(id).innerHTML || "";
+
+  document.getElementById('r-name').innerHTML = document.getElementById('name').value || "Your Name";
+  document.getElementById('r-email').innerHTML = document.getElementById('email').value || "your@email.com";
+  document.getElementById('r-phone').innerHTML = document.getElementById('phone').value || "+1234567890";
+
+  document.getElementById('r-objective').innerHTML = getHTML('objective') || "Your career objective...";
+  document.getElementById('r-summary').innerHTML = getHTML('summary') || "Your summary of experience...";
+  document.getElementById('r-experience').innerHTML = getHTML('experience') || "Your work experience...";
+  document.getElementById('r-skills').innerHTML = getHTML('skills') || "Your technical skills...";
+  document.getElementById('r-education').innerHTML = getHTML('education') || "Your education details...";
+  document.getElementById('r-projects').innerHTML = getHTML('projects') || "Your project profile...";
+  document.getElementById('r-personal').innerHTML = getHTML('personal') || "Your personal details...";
+}
+
+function updatePhoto() {
+  const fileInput = document.getElementById('photo');
+  const img = document.getElementById('r-photo');
+
+  if (fileInput.files && fileInput.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      img.src = e.target.result;
+      img.style.display = 'block';
+    };
+    reader.readAsDataURL(fileInput.files[0]);
+  } else {
+    img.src = '';
+    img.style.display = 'none';
+  }
+}
+
+function downloadResume() {
+  updateResume(); // Sync data
+
+  const resumeHTML = document.getElementById('resume').innerHTML;
+
+  const header = `
+    <html xmlns:o='urn:schemas-microsoft-com:office:office'
+          xmlns:w='urn:schemas-microsoft-com:office:word'
+          xmlns='http://www.w3.org/TR/REC-html40'>
+    <head><meta charset='utf-8'><title>Resume</title></head><body>`;
+  const footer = `</body></html>`;
+
+  const fullHTML = header + resumeHTML + footer;
+
+  const blob = new Blob(['\ufeff', fullHTML], {
+    type: 'application/msword'
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'resume.doc';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+</script>
+
+</body>
+</html>
