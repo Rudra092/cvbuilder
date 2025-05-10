@@ -5,7 +5,6 @@
   <title>Resume Builder</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <style>
     body {
       font-family: 'Inter', sans-serif;
@@ -224,7 +223,7 @@
   <div id="personal" class="editable" contenteditable="true" oninput="updateResume()">Your personal details...</div>
 </div>
 
-<button class="btn" onclick="payAndDownload()">Pay & Download Resume</button>
+<button class="btn" onclick="showPayment()">Pay & Download Resume</button>
 
   </div>
 
@@ -320,7 +319,29 @@ function downloadResume() {
   document.body.removeChild(link);
 }
 
-</script>
+function showPayment() {
+  document.getElementById("paymentModal").style.display = "flex";
+}
 
+function closeModal() {
+  document.getElementById("paymentModal").style.display = "none";
+}
+
+function confirmPayment() {
+  closeModal();
+  downloadResume(); // Proceed to download after confirmation
+}
+
+</script>
+<!-- Payment Modal -->
+<div id="paymentModal" style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); align-items:center; justify-content:center;">
+  <div style="background:white; padding:20px; border-radius:10px; width:300px; text-align:center;">
+    <h3>Scan to Pay</h3>
+    <img src="img/core-img/upi.jpg" alt="QR Code" style="width:200px; margin: 10px 0;">
+    <p>Support us to grow</p>
+    <button class="btn" onclick="confirmPayment()">I Have Paid</button>
+    <button class="btn" style="background:#ccc; color:#000;" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
 </body>
 </html>
